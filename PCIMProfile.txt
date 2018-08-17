@@ -189,8 +189,8 @@ Figure 7.1-1 shows the actors directly involved in the Profile and the relevant 
 Figure 7.1-1:  Actor Diagram
 
 Table 7.1-1 lists the transactions for each actor directly involved in the Profile. To claim compliance with this Profile, an actor shall support all required transactions (labeled “R”) and may support the optional transactions (labeled “O”). 
-Table 7.1-1:  Profile - Actors and Transactions[RJ1]
-ActorsTransactions OptionalityReferenceDevice-Patient Association ReporterReport Device-Patient AssociationRPCD TF-2: 3.17Report Device-Patient DisassociationRPCD TF-2: 3.18Device-Patient Association ManagerDevice-Patient Association Query ResponseRPCD TF-2: 3.19Device-Patient Association ConsumerQuery Device-Patient AssociationsOPCD TF-2: 3.19Device Registrant Report Registered Device DetailsRPCD TF-2: 3.207.1.1 Actor Descriptions and Actor Profile Requirements
+Table 7.1-1:  Profile - Actors and Transactions
+ActorsTransactions OptionalityReferenceDevice-Patient Association ReporterReport Device-Patient AssociationRPCD TF-2: 3.17Report Device-Patient DisassociationRPCD TF-2: 3.18Device-Patient Association ConsumerQuery Device-Patient AssociationsOPCD TF-2: 3.19Device Registrant Report Registered Device DetailsRPCD TF-2: 3.207.1.1 Actor Descriptions and Actor Profile Requirements
 Requirements are documented in Transactions (Volume 2) and Content Modules (Volume 3). This section documents any additional requirements on profile’s actors.
 7.1.1.1 Device-Patient Association Reporter
 The Device-Patient Association Reporter actor represents a system or person that is asserts that a given device is attached or removed from a specific patient. For each such event, the unique Patient ID, Device ID, and timestamp must be reported.
@@ -254,7 +254,7 @@ Before a device can participate in a Device-Patient Association, its identity an
 7.5 Security Considerations in the Use of This Proposed Profile
 This profile itself does not impose specific requirements for authentication, encryption, or auditing, leaving these matters to site-specific policy or agreement based on careful risk analysis taking into account the security and privacy sensitivity of the patient and device-patient association content being handled. The IHE PCD Technical Framework identifies security requirements across all PCD profiles.
 See the associated IHE PCD PCIM White Paper for additional discussion of some additional specific security concerns.
-7.5.1 General IHE PCD Guidance
+7.5.1 General IHE PCD Guidance on Security and Privacy
 During the profile development there were no unusual security/privacy concerns identified. There are no mandatory security controls, but the implementer is encouraged to use of the underlying security and privacy profiles from ITI that are appropriate to the transports, such as the Audit Trail and Node Authentication (ATNA) Profile. The operational environment risk assessment, following ISO 80001, will determine the actual security and safety controls employed.
 7.5.2 Risk Assessment and Mitigation for Device-Patient Association Profile
 Any procedures, manual or automatic, affecting identification of patients and devices in a clinical scenario should of course be subject to analysis of risks and potential mitigations according to the institution’s established policies and procedures for analysis of safety, security, and privacy risk in general, in accordance with general risk analysis best practices. In addition to the risk of clinical data loss or data associated with the wrong patient discussed elsewhere in this document, any other hazards potentially arising from related activities should be taken into account. The profile described in this document cannot be assessed for effects on risk in isolation from the context in which it could be used, particularly routines for assigning unique patient identification codes and manual and automatic means for verifying patient identity during care to assure accuracy. Likewise recording unique device identification of devices and tracking procedures need to be assessed for assurance of correctness. This risk analysis should be carried out by a team including qualified persons in affected clinical and technology departments.
@@ -263,9 +263,9 @@ The transactions described may carry highly sensitive identity and personal heal
 See the IHE PCD White Paper on Point-of-Care Identity Management Appendix C for additional risk analysis information including discussion of use of IHE Information Technology Infrastructure profiles for security.
 7.6 Cross Profile Considerations
 This profile specifically covers associations and disassociations between patients and devices. As patient demographics and ADT information (e.g., patient location) are often integral to satisfying the use cases profiled in this document, implementers should be familiar with the following profiles within the IT Infrastructure Technical Framework:
-Patient Administration Management profile
-Patient Demographics Query
-ITI Patient Demographic Query - Patient Demographic Reporter
+* Patient Administration Management profile
+* Patient Demographics Query
+* ITI Patient Demographic Query - Patient Demographic Reporter
 A Patient Demographic Consumer in IT Infrastructure might be used by a Device-Patient Association Reporter to allow presentation of a pick list of candidate patients to associate with one or more devices at the point-of-care. 
 Volume 2 – Transactions
 Insert in Section 3, as 3.17
@@ -287,7 +287,7 @@ This message is triggered at the beginning of an interval when the logical conne
 3.17.4.1.2 Message Semantics
 The significant content of the message is the following:
 * Confirmed unique identity of patient, preferably derived from an AIDC (Automatic Identification and Data Capture) such as scanning the patient wristband or reading an RFID tag. Code used to identify the patient must be chosen so as to be unique at least over the scope of the set of patients seen over all information systems in the institution, such as a Medical Record Number issued by the institution for the patient, or, if available, a national id number. The type and issuing entity shall be recorded with the code. Additional identity codes may be provided at the discretion of the institution. Note that any code identifiable with an individual patient must by secured from misuse in accordance with applicable legal and policy procedures.
-* Unique identity of Device. This again is determined by site considerations. It is preferable to use a universally unique identification of the individual instance of the device, such as an IEEE EUI-64 or a Unique Device Identifier such as one produced in accordance with the US FDA (or other regulatory agency) UDI standards. If this is not possible, then a local identification scheme allowing all device instances in the institution to be uniquely distinguished and tracked may be used. Additional identification codes may be included. Whatever code is used should be possible to record automatically, as manual data entry has a high error rate, and correct identification is a patient safety concern.
+* Unique identity of Device. This again is determined by site considerations. It is preferable to use a universally unique identification of the individual instance of the device, such as an IEEE EUI-64 or a Unique Device Identifier such as one produced in accordance with the US FDA (or other regulatory agency) UDI standards. If this is not possible, then another universal identification scheme such as EUI-64 or a local identification scheme allowing all device instances in the institution to be uniquely distinguished and tracked may be used. Additional identification codes may be included. Whatever code is used should be possible to record automatically, as manual data entry has a high error rate, and correct identification is a patient safety concern.
 * Identity of the authorized person responsible for obtaining and visually confirming the identity information for the patient and the device.
 The form of the message is similar to an unsolicited observation report, with supplementary PRT segments identifying the device, human operator originating the association. See Appendix A.1 for details of HL7 V2 messages.
 On receipt of the message, the manager system checks for valid syntax and that the:
@@ -340,7 +340,7 @@ Trying to fit these cases with the array of patterns present in Chapter 5 (Queri
 3.19.4.1.1 Trigger Events
 This message is triggered by the Device-Patient Association Consumer when it requires information about a device or devices associated with a patient currently or in the past (within the period available from the Device-Patient Association Manager). It may also be used to request a continuing feed of data concerning changes in device-patient associations within the scope of the Device-Patient Association Manager.
 3.19.4.1.2 Message Semantics
-This message is a query specification. It gives the scope of the information wanted by the Device-Patient Association Consumer in response to the query: what patients, units, devices and time periods are pertinent. See Appendix A.4 for details of semantics and HL7 segment contents.
+This message is a query specification. It gives the scope of the information wanted by the Device-Patient Association Consumer in response to the query: what patients, units, devices and time periods are pertinent. See Appendix A.4 for details of HL7 segment contents and semantics.
 3.19.4.1.3 Expected Actions
 The Device-Patient Association Manager is responsible for collecting, formatting and sending the requested information back to the querying Device-Patient Association Consumer according to the filtering specified in the query.
 The management of the query and response connection between the Device-Patient Association Consumer and the Device-Patient Association Manager in the case of an ongoing subscription is an implementation detail, but one practical method is for the Device-Patient Association Manager to maintain an open TCP listen port to accepts connections from one or more Device-Patient Association Consumer clients and then to open an individual TCP connection with each requester that persists as long as the client is connected and the query is valid (within its time limits, if any). For a non-subscription, “snapshot”-type query, the Device-Patient Association Manager could just responds on the static connection that the query comes in on.
@@ -401,7 +401,7 @@ No security considerations beyond the general ones already given are dictated.
 3.20.5.1 Security Audit Considerations
 No security audit considerations are dictated.
 Appendix A. Proposed Messages
-These message descriptions are not definitive; rather they are to give an idea of the approach and general expected content. Since they are rooted in the observation reporting messages of IHE PCD Device Enterprise Communications transaction PCD-01, refer to that profile in the current IHE PCD Technical Framework for details omitted here.
+The descriptions of these messages do not repeat all information in the related sections of the IHE PCD Technical Framework Volume 2 or the base HL7 specifications, which should be consulted for additional details. The base version of HL7 used in IHE PCD Profiles is version 2.6; however, this profile uses the semantics of the PRT segment which was not introduced until version 2.7 and not extended with full details of the Unique Device Identifier until version 2.8.2.
 A.1 Report Device-Patient Association and Disassociation
 As all of the use cases identified in this profile can be considered observations (it was observed that device d1 was connected to patient p1 starting at t1 and ending at t2), the ORU message structure is used throughout this profile to manage associations. This description also serves for a Report Device-Patient Disassociation – the only difference between the Association and Disassociation messages is the content of OBX-5. The Message Structure and attendant notes also serve to specify the segment pattern to be expected in responses to PCD-019 Query for Device-Patient Associations messages. The prototype for the IHE Patient Care Device observations in this profile is the PCD-01 in the Device Enterprise Communication profile (covered in Vol. 2 of the IHE PCD Technical Frameword), which implementers should familiarize themselves with – it serves as useful background information and contains details on some fields that are not covered in this profile.
 A.1.1 Message Structure
@@ -411,14 +411,14 @@ MSH, SFT, and UAC Segments: Same as in PCD-01 Profile.
 In the context of this use case, the message is constrained to reporting association(s) for a single patient. This could be single device, single patient, or multiple devices associated to a single patient.
 A.1.2 Segments
 A.1.2.1 MSH – Message Header
-Since this message is effectively and unsolicited observation report, the contents of the MSH segment follow[JR2] the specifications for PCD-01 in the IHE PCD Technical Framework, except that MSH-21 is valued “IHE_PCD_017^IHE PCD^1.3.6.1.4.1.19376.1.6.4.17^ISO” to identify it as a message representing a device-patient association.
+Since this message is effectively and unsolicited observation report, the contents of the MSH segment follow the specifications for PCD-01 in the IHE PCD Technical Framework Appendix B.1, except that MSH-21 is valued “IHE_PCD_017^IHE PCD^1.3.6.1.4.1.19376.1.6.4.17^ISO” to identify it as a message representing a device-patient association.
 A.1.2.2 PID – Patient Identification
-In order to assert an association between a patient and a device, the PID segment is required. It identifies the patient who is associated to the device.
+In order to assert an association between a patient and a device, the PID segment is required. It identifies the patient who is associated to the device. The Patient Identifier List must contain an identifier that is unique for all patients within the scope of the system. By default, if an identifier on the list is identified as a medical record number, it is used (PID-3.5 Identifier Type code valued as “MR”). There may be multiple identifiers in the list, and implementers may choose to allow a different identifier than the medical record number to be used as a configuration option.
 Appendix Table 2: PID Fields
 SEQDTOPTRPDescription1SIOSet ID - PID3CXRYPatient Identifier List5XPNOYPatient Name7DTMREGender8ISREDOBA.1.2.3 PV1 Patient Visit Information
-See IHE PCD-01 for basic information. In this profile, the PV1 segment is used to convey patient location information in PV1-3 Assigned Patient Location. This is also usable as a query filter to limit responses from the Device-Patient Association Query to matching locations.
+See IHE PCD-01 for basic information (IHE PCD Technical Framework Appendix B.6). In this profile, the PV1 segment is used to convey patient location information in PV1-3 Assigned Patient Location. This is also usable as a query filter to limit responses from the Device-Patient Association Query to matching locations.
 A.1.2.4 OBR – Order Request
-This segment serves as a wrapper for an association observation. It gives the association message a unique identifier in the Filler Order Number OBR-3. This acts as an association object instance identifier for tracking is used for tracking messages from all sources in the overall configuration of systems, so it must be constrained by some method of generation that assures that duplicate identifiers between sources are not possible. It gives the timestamp of the beginning of the association, and when it is known, the end of the association. The other OBR fields are as described for PCD-01.
+This segment serves as a wrapper for an association observation. It gives the association message a unique identifier in the Filler Order Number OBR-3. This is a required field: it acts as an association object instance identifier for tracking is used for tracking messages from all sources in the overall configuration of systems, so it must be constrained by some method of generation that assures that duplicate identifiers between sources are not possible. It gives the timestamp of the beginning of the association (OBR-7), and when it is known, the end of the association (OBR-8). 
 A.1.2.5 OBX – Observation (for Patient ID)
 This segment conveys the “observation” that the patient has been associated to a device. It includes the time stamp of the association event and the device ID. A set of PRT segments accompanies it to convey the identity of the patient, the device, and the responsible observer. 
 Appendix Table 3: OBX Fields
@@ -440,12 +440,11 @@ Appendix Table 9: PRT-12 Interpretation on page 31.12DTMCParticipation End 
 Refer to Appendix Table 8: PRT-11 Interpretation on page 30.13CWEOParticipation Quaitative Duration. Not used in this profile.14XADOParticipation Address15XTNOParticipation Telecommunication Address16EIO Participation Device Identifier.  From UDI, should be present if known. See discussion below.17DTMParticipation Device Manufacture Date. From UDI, should be present if known.18DTMOParticipation Device Expiry Date. Not normally applicable in this profile.19STOParticipation Device Lot Number. Not normally applicable in this profile.20STCParticipation Device Serial Number. From UDI, should be present if known.
 Appendix Table 7: PRT-4 Values
 ParticipationHL7 DescriptionAdaptationAUTAUT Author/Event InitiatorThe participant (nurse, device, etc.), initially asserts the association.EQUIPEquipmentThe participant is the device that is a subject of the device-patient association.ROResponsible ObserverThe participant (nurse, etc.) observes an already asserted association as a prelude to adjusting, validating, or marking in error. PRT-10   Participation Device   (EI)    02348
-PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. If possible, it should have as one of its values the “human readable form” of the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013).
+PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. If available, it should have as one of its values the “human readable form” of the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013).
 It should be noted that the use of OBX-18 for equipment identification has been deprecated. So for long-term use, the PRT segment is preferred. See the IHE Technical Framework Vol. 2, Appendix B.10.2 for details of how the PRT segment should be used for equipment identification.
 Definition: Identifier for the device participating. This may reflect an unstructured or a structured identifier such as FDA UDI, RFID, IEEE EUI-64 identifiers, or bar codes.
 If this attribute repeats, all instances must represent the same device.
 Condition: At least one of the Participation Person, Participation Organization, Participation Location, or Participation Device fields must be valued.
-Future implementation notes: as of HL7 V2.7, identifying devices in the OBX-18 field of the OBX segment is retained for backward compatibility only. This field will be represented through the PRT segment. Future versions of the IHE PCD Technical Framework will require the use of this segment, which will also provide for including the Unique Device Identification adopted by the U.S. F.D.A. and being considered by regulatory agencies in other jurisdictions.
 If this field contains an FDA UDI, it shall contain the entire Human Readable Form of the UDI. For example, a GS1-based UDI would be represented as follows:
 |(01)00643169001763(17)160712(21)21A11F4855^^2.16.840.1.113883.3.3719^ISO|
 A HIBCC-based example would be represented as follows:
@@ -499,9 +498,9 @@ SegmentsDescriptionHL7 Section ReferenceMSHMessage Header Segment2.15.9[{S
 For the segment pattern to be expected in the response to this query, see the definition of the ORU^R01 Message Structure in IHE PCD Technical Framework Volume 2, which is a specialization of the ORU^R01 Message Structure in Chapter 7, Section 7.3.1, ORU – Unsolicited Observation Message (Event R01), as follows:
 
 SegmentsDescriptionMSHMessage Header[{ SFT }]Software Segment[UAC]User Authentication Credential PIDPatient Identification [PV1]Patient Visit Information (for room bed)  OBRObservation Request{One group for each device being associated with patient identified in the PID OBXObservation Result { PRT }Participation – One PRT segment for  device, one for responsible person}
-Note that this segment pattern, unlike some segment patterns, is not introduced by any “header” type extra segments, but instead is a straight sequenced of repeats of PCD-17 messages reporting device-patient association events, filtered according to the query parameters. This implies that it should be the same  connection as the query was sent from the Device-Patient Association Consumer to the Device-Patient Association Manager, so there can be no confusion with other messages not from this profile.
+Note that this segment pattern, unlike some segment patterns, is not introduced by any “header” type extra segments, but instead is a straight sequenced of repeats of PCD-17 messages reporting device-patient association events, filtered according to the query parameters. This implies that it should be the same  connection as the query was sent from the Device-Patient Association Consumer to the Device-Patient Association Manager, so there can be no confusion with other messages not from this profile. Since there is no end indication in the message sequence, either, in the case of a bolus query getting current state information (see the discussion under the RCP segment, RCP-3), the Device-Patient Association Manager will close the connection initiated by the Device-Patient Association Consumer when all the data have been sent. A new connection must then be connected if and when another query is sent.
 A.2.3.1 MSH Segment
-As for transaction PCD-01 in the IHE PCD Technical Framework, except that MSH-21 is valued as IHE_PCD_017^IHE PCD^1.3.6.1.4.1.19376.1.6.4.17^ISO.
+As for transaction PCD-01 in the IHE PCD Technical Framework, except that MSH-21 is valued as IHE_PCD_017^IHE PCD^1.3.6.1.4.1.19376.1.6.4.19^ISO.
 A.2.3.2 QPD Segment
 QPD - Query Parameter Definition
 MnemonicDescriptionTypeOptionalityLengthTableRepetitionQPD.1Message Query NameCERequired250471NoQPD.2Query TagSTOptional32NoQPD.3User ParametersVARIESOptional256NoQPD.4Action CodeID323
@@ -510,16 +509,18 @@ Field
 Seq
 (Query ID=Z99)NameLENDTOPT R/#TBLSegment 
 Field NameElement
-Name1MessageQueryName60CWERMessageQueryName2QueryTag32STRQueryTag3ActionCodeID0033ActionCode
+Name1MessageQueryName60CWERMessageQueryName2QueryTag32STRQueryTag3User ParametersID0033ActionCodeIdentifiers for field, component, or subcomponent in QPD.3 User Parameters
+
+FLDELEMENT NAMEPID.3Patient Identifier ListPV1.3.1Assigned Patient Location – Point of CarePV1.3.2Assigned Patient Location – RoomPV1.3.3Assigned Patient Location – BedPRT.10Participation DeviceOBR.7Observation Date/Time (start)OBR.8Observation End Date/Time
 The QueryTag (QPD.2) is used to identify a query instance and therefore must be unique for each query.
 The User Parameters field (QPD.3) is used to specify “filtering” values, so that the query response can be limited to, for example, the records matching a particular Patient Identifier (by including a PID.3 specification), a particular device (by adding a Participation Device PRT specification) and so on. If multiple specifications are given, the responding system “AND”s the specifications together, so that for example, a patient identifier and a device identifier specification result in the response only gives associations involving that patient and device.
-The form of the User Parameters specifications in QPD.3 field follows the conventions established by the ITI Patient Data Query Profile (ITI-21, see the ITI Technical Framework, Vol. 2a): one or more repetitions (separated by the HL7 repetition separator, by default the tilde character ~), with each repetition in the form of subcomponent specifying the field, component, or subcomponent to filter on as @<seg>.<field number> followed by a subcomponent giving the value sought for that field. An example would be:
+The form of the User Parameters specifications in QPD.3 field follows the conventions established by the ITI Patient Data Query Profile (ITI-21, see the ITI Technical Framework, Vol. 2a): one or more repetitions (separated by the HL7 repetition separator, by default the tilde character ~), with each repetition in the form of a component specifying the field, component, or subcomponent to filter on as @<seg>.<field number> followed by a component giving the value sought for that field. An example would be:
 
  @PID.3.1^MR123~@PRT.10^PUMP1
 This means limit the messages given in response to ones involving patient identifier MR123 and device identifier PUMP1.
-Possible identifiers for field, component, or subcomponent in QPD.3:
-
-FLDELEMENT NAMEPID.3Patient Identifier ListPV1.3Assigned Patient LocationPRT.10Participation DeviceOBR.7Observation Date/TimeOBR.8Observation End Date/TimeA.A.1:   RCP Segment
+The Device-Patient Association Manager is responsible for executing the search in accordance with the filters. The different query parameter filters are ANDed together, that is, only associations where all query parameters match the sought value will be sent by the Device-Patient Association Manager. 
+Where the association records have query parameter fields that are repeated (as for example where multiple patient identifiers of different Identifier Types, or multiple device identifiers of different Identifier Types, are present), the Device-Patient Association Manager will consider the association record matched and send it if any value present in any repeat of the repeated field matches the sought value without regard to the Identifier Type.
+A.A.1:   RCP Segment
 RCP - Response Control Parameter
 FieldDescriptionTypeOptionalityLengthTableRepetition1Query PriorityIDR191No2Query Limited RequestX3Response ModalityCNE4Execution and Deliver Time5Modify IndicatoryIDRCP Response Control Parameter Field Description and Commentary
 Field
@@ -532,12 +533,13 @@ The possible values for RCP-1, Query Priority, are:
 
 ValueDescriptionCommentDDeferredIImmediate
 Quantity limited requests are not supported, so RCP-2 Quantity Limited Request value is not used.
-The supported values of RCP-3 Response Modality are R (Real Time) or T (Bolus)
+The supported values of RCP-3 Response Modality are R (Real Time) or T (Bolus). In real-time mode, association records are sent as they arrive at the Device-Patient Association Manager. In bolus mode all the available associations are sent at once. The Device-Patient Association Consumer wanting a continuous real-time feed of association events may need to make a bolus query first to get all existing associations meeting the desired filter specification to get the starting state.
+Because the segment pattern has no start or end indication, the Device-Patient Association Manager will signal the completion of a bolus query by closing the connection to the Device-Patient Association Consumer. The Device-Patient Association Consumer will then make a new connection for the real-time continuing query.
 RCP-4 Execution and Delivery Time is required when RCP-1 contains the value of RCP-1 D (Deferred). It specifies when the response is to be returned. 
 RCP-5 Modify Indicator specifies whether a new subscription is being requested (value: N), or a modification is being made to an existing subscription (M). QPD-4 Action Code can signify the deletion of a subscription with a value of D.
 Cancelling a Subscription
 A subscription may be explicitly cancelled by the Device-Patient Association Consumer by sending a QSX^J66^QSX_J01 message, which is simply an MSH segment containing that string as MSH-9, followed by a QID segment identifying the subscription being cancelled with QID Query Identification Segment containing in field QID-1 the Query Tag (from QPD-2 of the original query establishing the subscription) and in QID-2 the Message Query Name (from QPD-1 of the original query) .
-A.3 Register Deviceevice
+A.3 Register Device
 These messages are used to report the introduction of a new device or the removal of a device to subscribing actors, including the Device Patient Association Manager. 
 As the list of devices available within the facility is best thought of as a master file, the HL7 Master File Notification paradigm is used. For lack of a better alternative, the PRT segment is used to convey device details. While most commonly used to indicate a device’s participation in an observation, it contains the necessary fields for device inventory and is used elsewhere in this profile.
 A.3.1 Message Structure
@@ -555,10 +557,7 @@ This segment communicates the event corresponding to the device record.
 Appendix Table 12: MFE Fields
 SEQDTOPTRPDescription1IDRRecord-Level Event Code (See table below)4HDRYPrimary Key Value (Hospital designated device identifier)5IDRYPrimary Key Value Type (Value to CWE)6DTMOEntered Date/Time7DTMOEffective Date/TimeAppendix Table 13 – Record Level Event Codes
 ValueDescriptionMADDevice added to inventory listMDLDevice deleted from inventory listMUPDevice information updatedMDCDevice deactivated, but remains on inventory listMACDeactivated device reactivatedA.3.2.4 PRT – Participation Information Segment
-The Participation Information Segment contains device information details. 
-Appendix Table 14: PRT Fields
-SEQDTOPTRPDescription2IDRAction Code. Always value to UC (unchanged).4CWERParticipation – Value to “EQUIP”9PLOYParticipant Location – Value to the location of the device10EICYParticipation Device – Value to the ID(s) of the device
-PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one kind of identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. It should have as one of its values the Unique Device Identifier defined by the US FDA, where available. See details in the UDI Final Rule (U.S. Food and Drug Administration 2013)
+The Participation Information Segment contains device information details. Use the PRT segment details as in Appendix section A.1.2.6.
 A.4 Example Messages
 Example 1: At 12:00, Nurse Diesel connected patient Spaniel to a continuous physiological monitor with ID MON5588. At 12:30, she records the association on the Critical Care application. As she is an RN and has witnessed and entered the association on the Critical Care system, this is considered a validated association. This message would be sent from the Critical Care system in the role of Association Reporter to the Association Manager.
 
@@ -613,5 +612,13 @@ To cancel the subscription, the Device-Patient Association Consumer can send the
 
 MSH|
 QID|Q0044|Q66^Device-Patient Subscription^HL7005|
-[RJ1]Finish putting in the linkages
-[JR2]Look up section number
+IHE Patient Care Device Technical Framework Supplement – Point of Care Identity Management (PCIM)
+______________________________________________________________________________
+
+
+
+
+Rev. x.x – 20xx-MM-DD 	3	                       Copyright © 2018: IHE International, Inc.
+
+
+
