@@ -432,22 +432,48 @@ This segment conveys information about persons and/or devices that participated 
 * A device gateway
 * The device itself, if the patient ID is entered directly onto the device
 Appendix Table 6: PRT Fields
-SEQDTOPTRPDescription2IDRAction Code. Always value to UC (unchanged).4CWERParticipation – see 
-PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. If possible, it should have as one of its values the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013)
-Appendix Table 7: PRT-4 Values.5XCNYParticipation Person. If a person is the participant in this association message, his or her ID and name appear here.9PLYParticipation Location. Location where association was asserted or observed.10EICYParticipation Device. 
+SEQDTOPTRPDescription2IDRAction Code. Always value to UC (unchanged).4CWERParticipation .5XCNYParticipation Person. If a person is the participant in this association message, his or her ID and name appear here.9PLYParticipation Location. Location where association was asserted or observed.10EICYParticipation Device. 
 If a device is the initiator of this association record (PRT-4 = AUT), its ID appears here. Format is the same as in existing IHE PCD profiles and will match PRT-10 of device-as-subject PRT segment of this message, provided that the device associated with the patient and the device reporting the participation are one and the same (e.g., patient admitted on this monitor).
 If this PRT segment identifies this device as the subject of the association (PRT-4 = EQUIP), its ID appears here. Note – Prior to HL7 2.7, this would have appeared in OBX-18.11DTMCParticipation Begin Date/Time (arrival time).
 Refer to 
 Appendix Table 9: PRT-12 Interpretation on page 31.12DTMCParticipation End Date/Time (departure time).
-Refer to Appendix Table 8: PRT-11 Interpretation on page 30.
+Refer to Appendix Table 8: PRT-11 Interpretation on page 30.13CWEOParticipation Quaitative Duration. Not used in this profile.14XADOParticipation Address15XTNOParticipation Telecommunication Address16EIO Participation Device Identifier.  From UDI, should be present if known. See discussion below.17DTMParticipation Device Manufacture Date. From UDI, should be present if known.18DTMOParticipation Device Expiry Date. Not normally applicable in this profile.19STOParticipation Device Lot Number. Not normally applicable in this profile.20STCParticipation Device Serial Number. From UDI, should be present if known.
+Appendix Table 7: PRT-4 Values
+ParticipationHL7 DescriptionAdaptationAUTAUT Author/Event InitiatorThe participant (nurse, device, etc.), initially asserts the association.EQUIPEquipmentThe participant is the device that is a subject of the device-patient association.ROResponsible ObserverThe participant (nurse, etc.) observes an already asserted association as a prelude to adjusting, validating, or marking in error. PRT-10   Participation Device   (EI)    02348
 PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. If possible, it should have as one of its values the “human readable form” of the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013).
 It should be noted that the use of OBX-18 for equipment identification has been deprecated. So for long-term use, the PRT segment is preferred. See the IHE Technical Framework Vol. 2, Appendix B.10.2 for details of how the PRT segment should be used for equipment identification.
-Appendix Table 7: PRT-4 Values
-ParticipationHL7 DescriptionAdaptationAUTAUT Author/Event InitiatorThe participant (nurse, device, etc.), initially asserts the association.EQUIPEquipmentThe participant is the device that is a subject of the device-patient association.ROResponsible ObserverThe participant (nurse, etc.) observes an already asserted association as a prelude to adjusting, validating, or marking in error. Appendix Table 8: PRT-11 Interpretation
-Participation StatusAUTEQUIPROR-AssertedTime that the person/device asserted the association between the patient and device.Time that the device-patient association is asserted to have been established.Unusual. Time that the person in this role observed the person/device in the AUT role asserting the association.C-Correctedn/aCorrected time that the device-patient association is asserted to have been established.Time that the person in this role issued the correction.D-Deletedn/an/aTime that the person in this role issued the deletion order.F-Validatedn/aTime that the device-patient association is confirmed to have been established. If null, most recently asserted/corrected time has been confirmed.Time that the person in this role validated the association.W-Wrongn/an/aTime that the person in this role declared the association to be erroneous.
-Appendix Table 9: PRT-12 Interpretation
+Definition: Identifier for the device participating. This may reflect an unstructured or a structured identifier such as FDA UDI, RFID, IEEE EUI-64 identifiers, or bar codes.
+If this attribute repeats, all instances must represent the same device.
+Condition: At least one of the Participation Person, Participation Organization, Participation Location, or Participation Device fields must be valued.
+Future implementation notes: as of HL7 V2.7, identifying devices in the OBX-18 field of the OBX segment is retained for backward compatibility only. This field will be represented through the PRT segment. Future versions of the IHE PCD Technical Framework will require the use of this segment, which will also provide for including the Unique Device Identification adopted by the U.S. F.D.A. and being considered by regulatory agencies in other jurisdictions.
+If this field contains an FDA UDI, it shall contain the entire Human Readable Form of the UDI. For example, a GS1-based UDI would be represented as follows:
+|(01)00643169001763(17)160712(21)21A11F4855^^2.16.840.1.113883.3.3719^ISO|
+A HIBCC-based example would be represented as follows:
+|+H123PARTNO1234567890120/$$420020216LOT123456789012345/SXYZ4567890123 45678/16D20130202C^^2.16.840.1.113883.3.3719^ISO
+The identifier root shall be the OID assigned to UDI. For example, for FDA UDIs the root shall be 2.16.840.1.113883.3.3719, and the extension shall be the Human Readable Form appropriate for the style of content. When captured as a simple string, the string shall be the Human Readable Form appropriate for the style of content. The content style can be determined from the leading characters of the content:
+UDIs beginning with: 	
+	‘(‘ are in the GS1 Human Readable style;
+		‘0-9’ are a GS1 DI (containing only the DI value, no PI or GS1 AI);
+	‘+‘ are in the HIBCC Human Readable style;
+	‘=‘ or ‘&’ are in the ICCBBA Human Readable style.
+Note: If “&” is used in the UDI while one of the delimiters in MSH.2 includes “&” as well, it must be properly escaped per Chapter 2.7 of the HL7 Specification.
+The exchange of UDI sub-elements in PRT-16 through PRT-21 is not required when the full UDI string is provided in PRT.10. Whether to include some or all these fields as well when PRT-10 is present with a UDI that the rules are subject to specific implementation guides that will have to consider the patient safety implications of potentially conflicting data.
+When a UDI is provided and sub-elements are also provided, then for those sub-elements that are valued, the content must match the content encoded in the UDI if it is encoded within the UDI. 
+Caution: The UDI may contain personally identifying information in the form of the device serial number which may be used to link to other information on a patient. Standard practice for exchanging potentially identifying content should be exercised when exchanging UDIs which contain a serial number. 
+Note:  PRT.10 is a repeating field. Additional device identifiers, such as an IEEE EUI-64 may also be contained in this field.
+Appendix Table 8: PRT-11 Interpretation
+Participation StatusAUTEQUIPROR-AssertedTime that the person/device asserted the association between the patient and device.Time that the device-patient association is asserted to have been established.Unusual. Time that the person in this role observed the person/device in the AUT role asserting the association.C-Correctedn/aCorrected time that the device-patient association is asserted to have been established.Time that the person in this role issued the correction.D-Deletedn/an/aTime that the person in this role issued the deletion order.F-Validatedn/aTime that the device-patient association is confirmed to have been established. If null, most recently asserted/corrected time has been confirmed.Time that the person in this role validated the association.W-Wrongn/an/aTime that the person in this role declared the association to be erroneous.Appendix Table 9: PRT-12 Interpretation
 Participation ?
 ?StatusAUTEQUIPROR-AssertedTime that the person/device asserted the disassociation between the patient and device.Time that the device-patient disassociation is asserted to have taken place.Unusual. Time that the person in this role observed the person/device in the AUT role asserting the disassociation.C-Correctedn/aCorrected time that the device-patient association is asserted to have ended.Time that the person in this role issued the correction.D-Deletedn/an/an/aF-Validatedn/aTime that the device-patient association is confirmed to have ended. If null, most recently asserted/corrected time has been confirmed.Time that the person in this role validated the disassociation.W-Wrongn/an/an/a
+PRT-16   Participation Device Identifier   (EI)   03476
+Definition: Provides the U.S. FDA UDI device identifier (DI) element.
+This is the first component in the UDI and acts as the look up key for the Global Unique Device Identification Database (GUDID ), and may be used for retrieving additional attributes.
+When exchanging Device Identifiers (DI) the root shall be the OID, or standards’ appropriate corollary to the OID, assigned to DI and the extension shall be the Human Readable Form of the content. For example, for DIs the root shall be:
+	GS1 DIs: 	2.51.1.1
+	HIBCC DIs:	1.0.15961.10.816
+ICCBBA DIs:	2.16.840.1.113883.6.18.1.17 for Blood containers and 2.16.840.1.113883.6.18.1.34 otherwise.
+Example:	|00643169001763^^2.51.1.1^ISO|
+
 A.2 Device-Patient Association Query Message
 A.2.1 Scope
 This query allows a system to request a list of the device-patient associations meeting specified conditions. Note that “snapshot” and “subscription” request modes are supported.
