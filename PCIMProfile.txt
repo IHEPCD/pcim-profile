@@ -440,7 +440,8 @@ If this PRT segment identifies this device as the subject of the association (PR
 Refer to 
 Appendix Table 9: PRT-12 Interpretation on page 31.12DTMCParticipation End Date/Time (departure time).
 Refer to Appendix Table 8: PRT-11 Interpretation on page 30.
-PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. If possible, it should have as one of its values the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013)
+PRT-10 should contain some form of identifier sufficient to uniquely identify the device within the scope of the overall system. This is a repeating field, so more than one identifier can be given. See the discussion of OBX-18 in the IHE PCD Technical Framework Volume 2. If possible, it should have as one of its values the “human readable form” of the Unique Device Identifier defined by the US FDA, where applicable, but in any case must contain See details in the UDI Final Rule (U.S. Food and Drug Administration 2013).
+It should be noted that the use of OBX-18 for equipment identification has been deprecated. So for long-term use, the PRT segment is preferred. See the IHE Technical Framework Vol. 2, Appendix B.10.2 for details of how the PRT segment should be used for equipment identification.
 Appendix Table 7: PRT-4 Values
 ParticipationHL7 DescriptionAdaptationAUTAUT Author/Event InitiatorThe participant (nurse, device, etc.), initially asserts the association.EQUIPEquipmentThe participant is the device that is a subject of the device-patient association.ROResponsible ObserverThe participant (nurse, etc.) observes an already asserted association as a prelude to adjusting, validating, or marking in error. Appendix Table 8: PRT-11 Interpretation
 Participation StatusAUTEQUIPROR-AssertedTime that the person/device asserted the association between the patient and device.Time that the device-patient association is asserted to have been established.Unusual. Time that the person in this role observed the person/device in the AUT role asserting the association.C-Correctedn/aCorrected time that the device-patient association is asserted to have been established.Time that the person in this role issued the correction.D-Deletedn/an/aTime that the person in this role issued the deletion order.F-Validatedn/aTime that the device-patient association is confirmed to have been established. If null, most recently asserted/corrected time has been confirmed.Time that the person in this role validated the association.W-Wrongn/an/aTime that the person in this role declared the association to be erroneous.
@@ -472,6 +473,7 @@ SegmentsDescriptionHL7 Section ReferenceMSHMessage Header Segment2.15.9[{S
 For the segment pattern to be expected in the response to this query, see the definition of the ORU^R01 Message Structure in IHE PCD Technical Framework Volume 2, which is a specialization of the ORU^R01 Message Structure in Chapter 7, Section 7.3.1, ORU – Unsolicited Observation Message (Event R01), as follows:
 
 SegmentsDescriptionMSHMessage Header[{ SFT }]Software Segment[UAC]User Authentication Credential PIDPatient Identification [PV1]Patient Visit Information (for room bed)  OBRObservation Request{One group for each device being associated with patient identified in the PID OBXObservation Result { PRT }Participation – One PRT segment for  device, one for responsible person}
+Note that this segment pattern, unlike some segment patterns, is not introduced by any “header” type extra segments, but instead is a straight sequenced of repeats of PCD-17 messages reporting device-patient association events, filtered according to the query parameters. This implies that it should be the same  connection as the query was sent from the Device-Patient Association Consumer to the Device-Patient Association Manager, so there can be no confusion with other messages not from this profile.
 A.2.3.1 MSH Segment
 As for transaction PCD-01 in the IHE PCD Technical Framework, except that MSH-21 is valued as IHE_PCD_017^IHE PCD^1.3.6.1.4.1.19376.1.6.4.17^ISO.
 A.2.3.2 QPD Segment
@@ -483,8 +485,8 @@ Seq
 (Query ID=Z99)NameLENDTOPT R/#TBLSegment 
 Field NameElement
 Name1MessageQueryName60CWERMessageQueryName2QueryTag32STRQueryTag3ActionCodeID0033ActionCode
+The QueryTag (QPD.2) is used to identify a query instance and therefore must be unique for each query.
 The User Parameters field (QPD.3) is used to specify “filtering” values, so that the query response can be limited to, for example, the records matching a particular Patient Identifier (by including a PID.3 specification), a particular device (by adding a Participation Device PRT specification) and so on. If multiple specifications are given, the responding system “AND”s the specifications together, so that for example, a patient identifier and a device identifier specification result in the response only gives associations involving that patient and device.
-The Action Code (QPD.4) is used if a subscription is being modified (specified in RCP-5), and has the value A if a subscription is being added or D if it is being deleted
 The form of the User Parameters specifications in QPD.3 field follows the conventions established by the ITI Patient Data Query Profile (ITI-21, see the ITI Technical Framework, Vol. 2a): one or more repetitions (separated by the HL7 repetition separator, by default the tilde character ~), with each repetition in the form of subcomponent specifying the field, component, or subcomponent to filter on as @<seg>.<field number> followed by a subcomponent giving the value sought for that field. An example would be:
 
  @PID.3.1^MR123~@PRT.10^PUMP1
@@ -507,6 +509,8 @@ Quantity limited requests are not supported, so RCP-2 Quantity Limited Request v
 The supported values of RCP-3 Response Modality are R (Real Time) or T (Bolus)
 RCP-4 Execution and Delivery Time is required when RCP-1 contains the value of RCP-1 D (Deferred). It specifies when the response is to be returned. 
 RCP-5 Modify Indicator specifies whether a new subscription is being requested (value: N), or a modification is being made to an existing subscription (M). QPD-4 Action Code can signify the deletion of a subscription with a value of D.
+Cancelling a Subscription
+A subscription may be explicitly cancelled by the Device-Patient Association Consumer by sending a QSX^J66^QSX_J01 message, which is simply an MSH segment containing that string as MSH-9, followed by a QID segment identifying the subscription being cancelled with QID Query Identification Segment containing in field QID-1 the Query Tag (from QPD-2 of the original query establishing the subscription) and in QID-2 the Message Query Name (from QPD-1 of the original query) .
 A.3 Register Deviceevice
 These messages are used to report the introduction of a new device or the removal of a device to subscribing actors, including the Device Patient Association Manager. 
 As the list of devices available within the facility is best thought of as a master file, the HL7 Master File Notification paradigm is used. For lack of a better alternative, the PRT segment is used to convey device details. While most commonly used to indicate a device’s participation in an observation, it contains the necessary fields for device inventory and is used elsewhere in this profile.
@@ -579,5 +583,9 @@ PID|||4567^^^MPI^MR|....
 OBR|....
 OBX|...
 
+To cancel the subscription, the Device-Patient Association Consumer can send the following cancel message:
+
+MSH|
+QID|Q0044|Q66^Device-Patient Subscription^HL7005|
 [RJ1]Finish putting in the linkages
 [JR2]Look up section number
